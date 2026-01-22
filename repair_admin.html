@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Заявки на ремонт</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            background: #2980b9;
+        }
+
+        .repairs-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .repair-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .repair-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .repair-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .repair-info h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .repair-contact {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .repair-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in-progress {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .repair-body {
+            padding: 20px;
+        }
+
+        .device-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .device-info h4 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .problem-description {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .repair-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .urgency-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .urgency-low {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .urgency-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .urgency-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .repair-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-call {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-call:hover {
+            background: #218838;
+        }
+
+        .btn-email {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-email:hover {
+            background: #138496;
+        }
+
+        .btn-status {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-status:hover {
+            background: #5a6268;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .header-stats {
+                justify-content: center;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="repair_landing.html" class="back-link">← К форме заявок</a>
+
+    <div class="header">
+        <div class="header-content">
+            <h1>🔧 TechRepair - Админ-панель</h1>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalRepairs">0</div>
+                    <div class="stat-label">Всего заявок</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="newRepairs">0</div>
+                    <div class="stat-label">Новых</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="urgentRepairs">0</div>
+                    <div class="stat-label">Срочных</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="todayRepairs">0</div>
+                    <div class="stat-label">Сегодня</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput"
+                    placeholder="🔍 Поиск по имени, телефону, устройству или проблеме...">
+            </div>
+            <select class="filter-select" id="statusFilter">
+                <option value="">Все статусы</option>
+                <option value="new">Новые</option>
+                <option value="in-progress">В работе</option>
+                <option value="completed">Завершенные</option>
+                <option value="cancelled">Отмененные</option>
+            </select>
+            <select class="filter-select" id="deviceFilter">
+                <option value="">Все устройства</option>
+                <option value="smartphone">Смартфоны</option>
+                <option value="tablet">Планшеты</option>
+                <option value="laptop">Ноутбуки</option>
+                <option value="desktop">ПК</option>
+                <option value="other">Другое</option>
+            </select>
+            <select class="filter-select" id="urgencyFilter">
+                <option value="">Любая срочность</option>
+                <option value="high">Экстренные</option>
+                <option value="medium">Срочные</option>
+                <option value="low">Обычные</option>
+            </select>
+            <button class="refresh-btn" onclick="loadRepairs()">
+                🔄 Обновить
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            ⏳ Загружаем заявки...
+        </div>
+
+        <div class="repairs-grid" id="repairsGrid"></div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <h3>📭 Заявок на ремонт пока нет</h3>
+            <p>Новые заявки будут отображаться здесь</p>
+        </div>
+    </div>
+
+    <!-- Модальное окно для изменения статуса -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content">
+            <h3>Изменить статус заявки</h3>
+            <select id="newStatus" class="filter-select" style="width: 100%; margin: 20px 0;">
+                <option value="new">Новая</option>
+                <option value="in-progress">В работе</option>
+                <option value="completed">Завершена</option>
+                <option value="cancelled">Отменена</option>
+            </select>
+            <div class="modal-actions">
+                <button class="action-btn" onclick="closeModal()">Отмена</button>
+                <button class="action-btn btn-call" onclick="updateStatus()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let repairs = [];
+        let currentRepairId = null;
+
+        // Функция для показа уведомлений
+        function showNotification(message, type = 'info') {
+            // Создаем элемент уведомления
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    ${message}
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+
+            // Добавляем стили если их еще нет
+            if (!document.getElementById('notification-styles')) {
+                const styles = document.createElement('style');
+                styles.id = 'notification-styles';
+                styles.textContent = `
+                    .notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        color: white;
+                        font-weight: 600;
+                        z-index: 10000;
+                        max-width: 400px;
+                        animation: slideIn 0.3s ease-out;
+                    }
+                    .notification-success { background: #27ae60; }
+                    .notification-error { background: #e74c3c; }
+                    .notification-warning { background: #f39c12; }
+                    .notification-info { background: #3498db; }
+                    .notification-content {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                    .notification-close {
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 18px;
+                        cursor: pointer;
+                        padding: 0;
+                        width: 20px;
+                        height: 20px;
+                    }
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(styles);
+            }
+
+            // Добавляем уведомление
+            document.body.appendChild(notification);
+
+            // Автоматически удаляем через 5 секунд
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Загрузка заявок
+        async function loadRepairs() {
+            const loading = document.getElementById('loading');
+            const grid = document.getElementById('repairsGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            loading.style.display = 'block';
+            grid.innerHTML = '';
+            emptyState.style.display = 'none';
+
+            try {
+                // Добавляем таймаут для запроса
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const response = await fetch('/api/repairs', {
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    repairs = data; // Сохраняем полный ответ
+                    console.log('✅ Загружено заявок:', data.total || data.items?.length || 0);
+                    displayRepairs(data);
+                    updateStats();
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('❌ Ошибка загрузки заявок:', error);
+
+                if (error.name === 'AbortError') {
+                    showNotification('⏰ Превышено время ожидания загрузки', 'error');
+                } else {
+                    showNotification('⚠️ Ошибка загрузки. Показаны демо-данные.', 'warning');
+                }
+
+                // Показываем демо данные при ошибке
+                repairs = getDemoRepairs();
+                displayRepairs(repairs);
+                updateStats();
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Демо данные для тестирования
+        function getDemoRepairs() {
+            return [
+                {
+                    id: '1',
+                    firstName: 'Алексей',
+                    lastName: 'Петров',
+                    phone: '+7 (999) 123-45-67',
+                    email: 'alex@example.com',
+                    deviceType: 'smartphone',
+                    deviceBrand: 'iPhone 14 Pro',
+                    problemType: 'screen',
+                    urgency: 'high',
+                    address: 'ул. Ленина, 15, кв. 42',
+                    description: 'Разбился экран после падения. Тачскрин не работает, видны трещины по всему экрану.',
+                    timestamp: new Date().toISOString(),
+                    status: 'new',
+                    source: 'repair_landing'
+                },
+                {
+                    id: '2',
+                    firstName: 'Мария',
+                    lastName: 'Сидорова',
+                    phone: '+7 (999) 987-65-43',
+                    email: '',
+                    deviceType: 'laptop',
+                    deviceBrand: 'HP Pavilion 15',
+                    problemType: 'performance',
+                    urgency: 'medium',
+                    address: '',
+                    description: 'Ноутбук очень медленно работает, долго загружается, зависает при работе с документами.',
+                    timestamp: new Date(Date.now() - 86400000).toISOString(),
+                    status: 'in-progress',
+                    source: 'repair_landing'
+                },
+                {
+                    id: '3',
+                    firstName: 'Дмитрий',
+                    lastName: 'Козлов',
+                    phone: '+7 (999) 555-44-33',
+                    email: 'dmitry@mail.ru',
+                    deviceType: 'tablet',
+                    deviceBrand: 'iPad Air',
+                    problemType: 'charging',
+                    urgency: 'low',
+                    address: 'пр. Мира, 88',
+                    description: 'Планшет не заряжается, при подключении зарядки индикатор не загорается.',
+                    timestamp: new Date(Date.now() - 172800000).toISOString(),
+                    status: 'completed',
+                    source: 'repair_landing'
+                }
+            ];
+        }
+
+        // Отображение заявок
+        function displayRepairs(repairsData) {
+            const grid = document.getElementById('repairsGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            // Определяем массив заявок из разных форматов данных
+            let repairsToShow = [];
+            if (Array.isArray(repairsData)) {
+                repairsToShow = repairsData;
+            } else if (repairsData && repairsData.items) {
+                repairsToShow = repairsData.items;
+            } else if (repairsData && Array.isArray(repairsData.repairs)) {
+                repairsToShow = repairsData.repairs;
+            }
+
+            console.log('📋 Отображаем заявок:', repairsToShow.length);
+
+            if (repairsToShow.length === 0) {
+                grid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            grid.innerHTML = repairsToShow.map(repair => `
+                <div class="repair-card">
+                    <div class="repair-header">
+                        <div class="repair-info">
+                            <h3>${repair.firstName} ${repair.lastName || ''}</h3>
+                            <div class="repair-contact">
+                                📞 ${repair.phone}
+                                ${repair.email ? `<br>📧 ${repair.email}` : ''}
+                            </div>
+                        </div>
+                        <div class="repair-status status-${repair.status}">
+                            ${getStatusText(repair.status)}
+                        </div>
+                    </div>
+                    <div class="repair-body">
+                        <div class="device-info">
+                            <h4>${getDeviceText(repair.deviceType)}</h4>
+                            ${repair.deviceBrand ? `<strong>Модель:</strong> ${repair.deviceBrand}` : 'Модель не указана'}
+                        </div>
+                        
+                        ${repair.description ? `
+                        <div class="problem-description">
+                            <strong>Проблема:</strong> ${repair.description}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="repair-details">
+                            <div class="detail-item">
+                                🏷️ ${getProblemText(repair.problemType)}
+                            </div>
+                            <div class="detail-item">
+                                <span class="urgency-badge urgency-${repair.urgency}">
+                                    ${getUrgencyText(repair.urgency)}
+                                </span>
+                            </div>
+                            ${repair.address ? `<div class="detail-item">📍 ${repair.address}</div>` : ''}
+                            <div class="detail-item">
+                                🕒 ${formatDate(repair.timestamp)}
+                            </div>
+                        </div>
+                        <div class="repair-actions">
+                            <button class="action-btn btn-call" onclick="callClient('${repair.phone}')">
+                                📞 Позвонить
+                            </button>
+                            ${repair.email ? `<button class="action-btn btn-email" onclick="emailClient('${repair.email}')">📧 Email</button>` : ''}
+                            <button class="action-btn btn-status" onclick="changeStatus('${repair.id}', '${repair.status}')">
+                                🔄 Статус
+                            </button>
+                            <button class="action-btn btn-delete" onclick="deleteRepair('${repair.id}')">
+                                🗑️ Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            // Получаем массив заявок из разных форматов
+            let repairsArray = [];
+            if (Array.isArray(repairs)) {
+                repairsArray = repairs;
+            } else if (repairs && repairs.items) {
+                repairsArray = repairs.items;
+            } else if (repairs && Array.isArray(repairs.repairs)) {
+                repairsArray = repairs.repairs;
+            }
+
+            const total = repairsArray.length;
+            const newCount = repairsArray.filter(repair => repair.status === 'new').length;
+            const urgentCount = repairsArray.filter(repair => repair.urgency === 'high').length;
+            const today = new Date().toDateString();
+            const todayCount = repairsArray.filter(repair => {
+                try {
+                    const repairDate = new Date(repair.timestamp || repair.created_at);
+                    return repairDate.toDateString() === today;
+                } catch (e) {
+                    return false;
+                }
+            }).length;
+
+            document.getElementById('totalRepairs').textContent = total;
+            document.getElementById('newRepairs').textContent = newCount;
+            document.getElementById('urgentRepairs').textContent = urgentCount;
+            document.getElementById('todayRepairs').textContent = todayCount;
+
+            console.log('📊 Статистика обновлена:', { total, newCount, urgentCount, todayCount });
+        }
+
+        // Вспомогательные функции
+        function getStatusText(status) {
+            const statuses = {
+                'new': 'Новая',
+                'in-progress': 'В работе',
+                'completed': 'Завершена',
+                'cancelled': 'Отменена'
+            };
+            return statuses[status] || status;
+        }
+
+        function getDeviceText(deviceType) {
+            const devices = {
+                'smartphone': '📱 Смартфон',
+                'tablet': '📟 Планшет',
+                'laptop': '💻 Ноутбук',
+                'desktop': '🖥️ Настольный ПК',
+                'other': '🔧 Другое устройство'
+            };
+            return devices[deviceType] || deviceType;
+        }
+
+        function getProblemText(problemType) {
+            const problems = {
+                'screen': '🖥️ Проблемы с экраном',
+                'battery': '🔋 Проблемы с батареей',
+                'charging': '🔌 Не заряжается',
+                'water': '💧 Попадание жидкости',
+                'software': '💾 Программные проблемы',
+                'performance': '⚡ Медленная работа',
+                'audio': '🔊 Проблемы со звуком',
+                'connectivity': '📶 Проблемы с сетью',
+                'other': '🔧 Другое'
+            };
+            return problems[problemType] || 'Не указано';
+        }
+
+        function getUrgencyText(urgency) {
+            const urgencies = {
+                'low': '🟢 Обычная',
+                'medium': '🟡 Срочная',
+                'high': '🔴 Экстренная'
+            };
+            return urgencies[urgency] || urgency;
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) return 'Сегодня';
+            if (diffDays === 2) return 'Вчера';
+            if (diffDays <= 7) return `${diffDays - 1} дн. назад`;
+
+            return date.toLocaleDateString('ru-RU');
+        }
+
+        // Действия с заявками
+        function callClient(phone) {
+            window.open(`tel:${phone}`);
+        }
+
+        function emailClient(email) {
+            window.open(`mailto:${email}`);
+        }
+
+        function changeStatus(repairId, currentStatus) {
+            currentRepairId = repairId;
+            document.getElementById('newStatus').value = currentStatus;
+            document.getElementById('statusModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('statusModal').style.display = 'none';
+            currentRepairId = null;
+        }
+
+        async function updateStatus() {
+            if (!currentRepairId) return;
+
+            const newStatus = document.getElementById('newStatus').value;
+            const statusModal = document.getElementById('statusModal');
+            const saveBtn = statusModal.querySelector('.btn-call');
+
+            // Показываем индикатор загрузки
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = '⏳ Сохраняем...';
+            saveBtn.disabled = true;
+
+            try {
+                // Добавляем таймаут для запроса
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
+
+                const response = await fetch(`/api/repairs/${currentRepairId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    console.log('✅ Статус обновлен успешно');
+                    // Обновляем локально
+                    const repair = repairs.items ? repairs.items.find(r => r.id === currentRepairId) : repairs.find(r => r.id === currentRepairId);
+                    if (repair) {
+                        repair.status = newStatus;
+                        repair.updated_at = new Date().toISOString();
+                    }
+                    displayRepairs(getFilteredRepairs());
+                    updateStats();
+
+                    // Показываем успешное сообщение
+                    showNotification('✅ Статус заявки обновлен', 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('❌ Ошибка обновления статуса:', error);
+
+                if (error.name === 'AbortError') {
+                    showNotification('⏰ Превышено время ожидания. Попробуйте еще раз.', 'error');
+                } else {
+                    // Обновляем локально даже при ошибке API
+                    const repair = repairs.items ? repairs.items.find(r => r.id === currentRepairId) : repairs.find(r => r.id === currentRepairId);
+                    if (repair) {
+                        repair.status = newStatus;
+                        repair.updated_at = new Date().toISOString();
+                    }
+                    displayRepairs(getFilteredRepairs());
+                    updateStats();
+
+                    showNotification('⚠️ Статус обновлен локально (проблемы с сервером)', 'warning');
+                }
+            } finally {
+                // Восстанавливаем кнопку
+                saveBtn.textContent = originalText;
+                saveBtn.disabled = false;
+                closeModal();
+            }
+        }
+
+        async function deleteRepair(repairId) {
+            if (!confirm('Удалить эту заявку на ремонт?')) return;
+
+            try {
+                const response = await fetch(`/api/repairs/${repairId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    repairs = repairs.filter(r => r.id !== repairId);
+                    displayRepairs(getFilteredRepairs());
+                    updateStats();
+                }
+            } catch (error) {
+                // Удаляем локально даже при ошибке API
+                repairs = repairs.filter(r => r.id !== repairId);
+                displayRepairs(getFilteredRepairs());
+                updateStats();
+            }
+        }
+
+        // Фильтрация и поиск
+        function getFilteredRepairs() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const deviceFilter = document.getElementById('deviceFilter').value;
+            const urgencyFilter = document.getElementById('urgencyFilter').value;
+
+            // Получаем массив заявок из разных форматов
+            let repairsArray = [];
+            if (Array.isArray(repairs)) {
+                repairsArray = repairs;
+            } else if (repairs && repairs.items) {
+                repairsArray = repairs.items;
+            } else if (repairs && Array.isArray(repairs.repairs)) {
+                repairsArray = repairs.repairs;
+            }
+
+            return repairsArray.filter(repair => {
+                const matchesSearch = !searchTerm ||
+                    repair.firstName.toLowerCase().includes(searchTerm) ||
+                    (repair.lastName && repair.lastName.toLowerCase().includes(searchTerm)) ||
+                    repair.phone.includes(searchTerm) ||
+                    (repair.deviceBrand && repair.deviceBrand.toLowerCase().includes(searchTerm)) ||
+                    repair.description.toLowerCase().includes(searchTerm);
+
+                const matchesStatus = !statusFilter || repair.status === statusFilter;
+                const matchesDevice = !deviceFilter || repair.deviceType === deviceFilter;
+                const matchesUrgency = !urgencyFilter || repair.urgency === urgencyFilter;
+
+                return matchesSearch && matchesStatus && matchesDevice && matchesUrgency;
+            });
+        }
+
+        // События
+        document.getElementById('searchInput').addEventListener('input', () => {
+            displayRepairs(getFilteredRepairs());
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', () => {
+            displayRepairs(getFilteredRepairs());
+        });
+
+        document.getElementById('deviceFilter').addEventListener('change', () => {
+            displayRepairs(getFilteredRepairs());
+        });
+
+        document.getElementById('urgencyFilter').addEventListener('change', () => {
+            displayRepairs(getFilteredRepairs());
+        });
+
+        // Закрытие модального окна по клику вне его
+        document.getElementById('statusModal').addEventListener('click', (e) => {
+            if (e.target.id === 'statusModal') {
+                closeModal();
+            }
+        });
+
+        // Автообновление каждые 30 секунд
+        setInterval(loadRepairs, 30000);
+
+        // Загружаем заявки при загрузке страницы
+        loadRepairs();
+    </script>
+</body>
+
+</html>

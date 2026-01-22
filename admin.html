@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Здравница ПК — Админ‑панель</title>
+    <link rel="stylesheet" href="styles/design-system.css">
+    <link rel="stylesheet" href="styles/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🔧 Здравница ПК CRM</div>
+                <div style="margin-top: var(--spacing-xs); color: var(--secondary-grey); font-size: 0.875rem;">
+                    Внутренняя панель
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item" data-view="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Сводка</span>
+                </a>
+                <a href="#orders" class="nav-item" data-view="orders">
+                    <span class="nav-icon">📋</span>
+                    <span>Заявки</span>
+                </a>
+                <a href="#customers" class="nav-item" data-view="customers">
+                    <span class="nav-icon">👥</span>
+                    <span>Клиенты</span>
+                </a>
+                <a href="#inventory" class="nav-item" data-view="inventory">
+                    <span class="nav-icon">📦</span>
+                    <span>Склад</span>
+                </a>
+                <a href="#calendar" class="nav-item" data-view="calendar">
+                    <span class="nav-icon">📅</span>
+                    <span>Календарь</span>
+                </a>
+                <a href="#settings" class="nav-item" data-view="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <div style="display:flex; align-items:center; gap: var(--spacing-md);">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()" style="display:none;">☰</button>
+                    <h1 class="page-title" id="pageTitle">Сводка</h1>
+                </div>
+                <div class="user-menu">
+                    <span style="color: var(--secondary-grey);">Сотрудник</span>
+                    <div class="user-avatar">TR</div>
+                </div>
+            </div>
+
+            <!-- Views -->
+            <section id="view-dashboard" class="view">
+                <div class="dashboard-overview" id="statsCards">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Всего заявок</span>
+                            <div class="stat-icon blue">📋</div>
+                        </div>
+                        <div class="stat-value" id="statTotal">—</div>
+                        <div class="stat-change" id="statToday">Сегодня: —</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Новые</span>
+                            <div class="stat-icon orange">🆕</div>
+                        </div>
+                        <div class="stat-value" id="statNew">—</div>
+                        <div class="stat-change">Требуют внимания</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">В работе</span>
+                            <div class="stat-icon purple">🔧</div>
+                        </div>
+                        <div class="stat-value" id="statInProgress">—</div>
+                        <div class="stat-change">Активные ремонты</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Завершено</span>
+                            <div class="stat-icon green">✅</div>
+                        </div>
+                        <div class="stat-value" id="statCompleted">—</div>
+                        <div class="stat-change">Закрытые заявки</div>
+                    </div>
+                </div>
+
+                <div class="data-table-container" style="margin-top: var(--spacing-lg);">
+                    <div class="table-header">
+                        <h2 class="table-title">Последние заявки</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary btn-sm" onclick="openOrderModal()">+ Новая заявка</button>
+                            <button class="btn btn-secondary btn-sm" onclick="refreshAll()">Обновить</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Клиент</th>
+                                <th>Устройство</th>
+                                <th>Проблема</th>
+                                <th>Статус</th>
+                                <th>Создано</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboardOrdersTbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-orders" class="view" style="display:none;">
+                <div class="data-table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Заявки на ремонт</h2>
+                        <div class="table-actions">
+                            <input id="ordersSearch" type="text" placeholder="Поиск..." style="max-width:260px;" />
+                            <select id="ordersStatusFilter" style="max-width:220px;">
+                                <option value="">Все статусы</option>
+                                <option value="new">Новая</option>
+                                <option value="in-progress">В работе</option>
+                                <option value="completed">Завершена</option>
+                                <option value="cancelled">Отменена</option>
+                            </select>
+                            <button class="btn btn-primary btn-sm" onclick="openOrderModal()">+ Новая</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Клиент</th>
+                                <th>Телефон</th>
+                                <th>Устройство</th>
+                                <th>Срочность</th>
+                                <th>Статус</th>
+                                <th>Создано</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-customers" class="view" style="display:none;">
+                <div class="data-table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Клиенты</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary btn-sm" onclick="openCustomerModal()">+ Клиент</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Телефон</th>
+                                <th>Email</th>
+                                <th>Заявок</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-inventory" class="view" style="display:none;">
+                <div class="data-table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Склад</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary btn-sm" onclick="openInventoryModal()">+ Позиция</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Наименование</th>
+                                <th>SKU</th>
+                                <th>Остаток</th>
+                                <th>Мин.</th>
+                                <th>Локация</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-calendar" class="view" style="display:none;">
+                <div class="data-table-container">
+                    <div class="table-header">
+                        <h2 class="table-title">Календарь</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary btn-sm" onclick="openAppointmentModal()">+ Запись</button>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Дата/время</th>
+                                <th>Клиент</th>
+                                <th>Тема</th>
+                                <th>Мастер</th>
+                                <th>Статус</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendarTbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-settings" class="view" style="display:none;">
+                <div class="card" style="max-width: 720px;">
+                    <h2 style="margin-bottom: var(--spacing-md);">Настройки</h2>
+                    <form id="settingsForm">
+                        <div class="input-group">
+                            <label for="settingsShopName">Название сервиса</label>
+                            <input type="text" id="settingsShopName" name="shop_name" placeholder="TechRepair Pro">
+                        </div>
+                        <div class="input-group">
+                            <label for="settingsPhone">Телефон</label>
+                            <input type="text" id="settingsPhone" name="phone" placeholder="+7 (999) 123-45-67">
+                        </div>
+                        <div class="input-group">
+                            <label for="settingsAddress">Адрес</label>
+                            <input type="text" id="settingsAddress" name="address" placeholder="г. Москва, ул. Техническая, 12">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Сохранить</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Order modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="orderModalTitle">Новая заявка</h2>
+                <button class="modal-close" onclick="closeModal('orderModal')">×</button>
+            </div>
+            <form id="orderForm">
+                <input type="hidden" id="orderId" name="id" />
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="orderFirstName">Имя</label>
+                        <input type="text" id="orderFirstName" name="firstName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="orderLastName">Фамилия</label>
+                        <input type="text" id="orderLastName" name="lastName">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="orderPhone">Телефон</label>
+                        <input type="tel" id="orderPhone" name="phone" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="orderEmail">Email</label>
+                        <input type="email" id="orderEmail" name="email">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="orderDeviceType">Тип устройства</label>
+                        <select id="orderDeviceType" name="deviceType" required>
+                            <option value="">Выберите...</option>
+                            <option value="smartphone">📱 Смартфон</option>
+                            <option value="tablet">📟 Планшет</option>
+                            <option value="laptop">💻 Ноутбук</option>
+                            <option value="desktop">🖥️ ПК</option>
+                            <option value="other">🔧 Другое</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="orderDeviceBrand">Марка/модель</label>
+                        <input type="text" id="orderDeviceBrand" name="deviceBrand" placeholder="Напр. iPhone 14 Pro">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="orderProblemType">Тип проблемы</label>
+                        <select id="orderProblemType" name="problemType">
+                            <option value="">Выберите...</option>
+                            <option value="screen">🖥️ Экран</option>
+                            <option value="battery">🔋 Батарея</option>
+                            <option value="charging">🔌 Не заряжается</option>
+                            <option value="water">💧 После воды</option>
+                            <option value="software">💾 ПО/система</option>
+                            <option value="performance">⚡ Тормозит</option>
+                            <option value="other">🔧 Другое</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="orderUrgency">Срочность</label>
+                        <select id="orderUrgency" name="urgency">
+                            <option value="low">🟢 Обычная</option>
+                            <option value="medium">🟡 Срочная</option>
+                            <option value="high">🔴 Экстренная</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="orderAddress">Адрес</label>
+                    <input type="text" id="orderAddress" name="address" placeholder="(необязательно)">
+                </div>
+                <div class="input-group">
+                    <label for="orderDescription">Описание</label>
+                    <textarea id="orderDescription" name="description" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="orderStatus">Статус</label>
+                        <select id="orderStatus" name="status">
+                            <option value="new">Новая</option>
+                            <option value="in-progress">В работе</option>
+                            <option value="completed">Завершена</option>
+                            <option value="cancelled">Отменена</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="orderTechnician">Мастер</label>
+                        <input type="text" id="orderTechnician" name="technician" placeholder="Напр. Иван">
+                    </div>
+                </div>
+                <div style="display:flex; gap: var(--spacing-sm); margin-top: var(--spacing-lg);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('orderModal')" style="flex: 1;">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer modal -->
+    <div class="modal" id="customerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="customerModalTitle">Клиент</h2>
+                <button class="modal-close" onclick="closeModal('customerModal')">×</button>
+            </div>
+            <form id="customerForm">
+                <input type="hidden" id="customerId" name="id" />
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="customerFirstName">Имя</label>
+                        <input type="text" id="customerFirstName" name="firstName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="customerLastName">Фамилия</label>
+                        <input type="text" id="customerLastName" name="lastName">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="customerPhone">Телефон</label>
+                        <input type="tel" id="customerPhone" name="phone" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="customerEmail">Email</label>
+                        <input type="email" id="customerEmail" name="email">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="customerNote">Заметка</label>
+                    <textarea id="customerNote" name="note" placeholder="Напр. предпочитает звонок"></textarea>
+                </div>
+                <div style="display:flex; gap: var(--spacing-sm); margin-top: var(--spacing-lg);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('customerModal')" style="flex: 1;">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inventory modal -->
+    <div class="modal" id="inventoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="inventoryModalTitle">Позиция склада</h2>
+                <button class="modal-close" onclick="closeModal('inventoryModal')">×</button>
+            </div>
+            <form id="inventoryForm">
+                <input type="hidden" id="inventoryId" name="id" />
+                <div class="input-group">
+                    <label for="inventoryName">Наименование</label>
+                    <input type="text" id="inventoryName" name="name" required>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="inventorySku">SKU</label>
+                        <input type="text" id="inventorySku" name="sku" placeholder="Напр. IP14-SCR">
+                    </div>
+                    <div class="input-group">
+                        <label for="inventoryLocation">Локация</label>
+                        <input type="text" id="inventoryLocation" name="location" placeholder="Стеллаж A-2">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="inventoryQty">Остаток</label>
+                        <input type="text" id="inventoryQty" name="qty" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="inventoryMinQty">Мин. остаток</label>
+                        <input type="text" id="inventoryMinQty" name="min_qty" value="0">
+                    </div>
+                </div>
+                <div style="display:flex; gap: var(--spacing-sm); margin-top: var(--spacing-lg);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('inventoryModal')" style="flex: 1;">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Appointment modal -->
+    <div class="modal" id="appointmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="appointmentModalTitle">Запись</h2>
+                <button class="modal-close" onclick="closeModal('appointmentModal')">×</button>
+            </div>
+            <form id="appointmentForm">
+                <input type="hidden" id="appointmentId" name="id" />
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="appointmentStart">Дата/время</label>
+                        <input type="datetime-local" id="appointmentStart" name="start" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="appointmentCustomer">Клиент (телефон или имя)</label>
+                        <input type="text" id="appointmentCustomer" name="customer" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="appointmentTitle">Тема</label>
+                        <input type="text" id="appointmentTitle" name="title" required placeholder="Диагностика / выдача / приём">
+                    </div>
+                    <div class="input-group">
+                        <label for="appointmentTechnician">Мастер</label>
+                        <input type="text" id="appointmentTechnician" name="technician" placeholder="(необязательно)">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="appointmentStatus">Статус</label>
+                        <select id="appointmentStatus" name="status">
+                            <option value="planned">Запланировано</option>
+                            <option value="done">Выполнено</option>
+                            <option value="cancelled">Отменено</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="appointmentNote">Комментарий</label>
+                        <input type="text" id="appointmentNote" name="note" placeholder="(необязательно)">
+                    </div>
+                </div>
+                <div style="display:flex; gap: var(--spacing-sm); margin-top: var(--spacing-lg);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('appointmentModal')" style="flex: 1;">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ---------- helpers ----------
+        const API = {
+            repairs: '/api/repairs',
+            stats: '/api/stats',
+            customers: '/api/customers',
+            inventory: '/api/inventory',
+            appointments: '/api/appointments',
+            settings: '/api/settings'
+        };
+
+        // Simple client-side auth gate (matches index.html)
+        const AUTH_KEY = 'techrepair_staff_auth';
+        if (sessionStorage.getItem(AUTH_KEY) !== '1') {
+            // If opened напрямую без входа — отправляем на лендинг
+            window.location.replace('index.html');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        async function fetchJSON(url, options = {}) {
+            const res = await fetch(url, {
+                headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+                ...options
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        }
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('\"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function badgeForStatus(status) {
+            const map = {
+                'new': { cls: 'badge-warning', text: 'Новая' },
+                'in-progress': { cls: 'badge-info', text: 'В работе' },
+                'completed': { cls: 'badge-success', text: 'Завершена' },
+                'cancelled': { cls: 'badge-danger', text: 'Отменена' },
+                'ready': { cls: 'badge-success', text: 'Готово' }
+            };
+            const x = map[status] || { cls: 'badge-info', text: status || '—' };
+            return `<span class="badge ${x.cls}">${x.text}</span>`;
+        }
+
+        function urgencyText(u) {
+            const map = { low: '🟢 Обычная', medium: '🟡 Срочная', high: '🔴 Экстренная' };
+            return map[u] || (u || '—');
+        }
+
+        function fmtDate(iso) {
+            if (!iso) return '—';
+            try { return new Date(iso).toLocaleString('ru-RU'); } catch { return iso; }
+        }
+
+        // ---------- state ----------
+        const state = {
+            repairs: [],
+            customers: [],
+            inventory: [],
+            appointments: [],
+            settings: {}
+        };
+
+        // ---------- routing/views ----------
+        const titles = {
+            dashboard: 'Сводка',
+            orders: 'Заявки',
+            customers: 'Клиенты',
+            inventory: 'Склад',
+            calendar: 'Календарь',
+            settings: 'Настройки'
+        };
+
+        function showView(view) {
+            document.querySelectorAll('.view').forEach(v => (v.style.display = 'none'));
+            const el = document.getElementById(`view-${view}`);
+            if (el) el.style.display = 'block';
+
+            document.querySelectorAll('.nav-item').forEach(a => a.classList.remove('active'));
+            const active = document.querySelector(`.nav-item[data-view=\"${view}\"]`);
+            if (active) active.classList.add('active');
+
+            document.getElementById('pageTitle').textContent = titles[view] || 'CRM';
+        }
+
+        function currentViewFromHash() {
+            const h = (location.hash || '#dashboard').replace('#', '');
+            if (titles[h]) return h;
+            return 'dashboard';
+        }
+
+        // ---------- rendering ----------
+        function renderDashboard() {
+            const tbody = document.getElementById('dashboardOrdersTbody');
+            const rows = state.repairs.slice(0, 8).map(r => {
+                const name = `${escapeHtml(r.firstName || '')} ${escapeHtml(r.lastName || '')}`.trim() || '—';
+                const device = escapeHtml(r.deviceBrand || r.deviceType || '—');
+                const problem = escapeHtml(r.problemType || '—');
+                return `
+                    <tr>
+                        <td>${name}</td>
+                        <td>${device}</td>
+                        <td>${problem}</td>
+                        <td>${badgeForStatus(r.status)}</td>
+                        <td>${fmtDate(r.timestamp)}</td>
+                        <td class="table-actions-cell">
+                            <button class="action-btn action-btn-edit" onclick="editOrder('${escapeHtml(r.id)}')">Открыть</button>
+                            <button class="action-btn action-btn-delete" onclick="deleteOrder('${escapeHtml(r.id)}')">Удалить</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            tbody.innerHTML = rows || `<tr><td colspan="6" style="padding: var(--spacing-lg); color: var(--secondary-grey);">Нет заявок</td></tr>`;
+        }
+
+        function renderOrders() {
+            const q = (document.getElementById('ordersSearch').value || '').toLowerCase();
+            const status = document.getElementById('ordersStatusFilter').value;
+            const tbody = document.getElementById('ordersTbody');
+
+            const items = state.repairs.filter(r => {
+                const hay = `${r.firstName||''} ${r.lastName||''} ${r.phone||''} ${r.deviceBrand||''} ${r.description||''}`.toLowerCase();
+                const okQ = !q || hay.includes(q);
+                const okS = !status || r.status === status;
+                return okQ && okS;
+            });
+
+            tbody.innerHTML = items.map(r => `
+                <tr>
+                    <td>${escapeHtml(`${r.firstName||''} ${r.lastName||''}`.trim()) || '—'}</td>
+                    <td>${escapeHtml(r.phone || '—')}</td>
+                    <td>${escapeHtml(r.deviceBrand || r.deviceType || '—')}</td>
+                    <td>${escapeHtml(urgencyText(r.urgency))}</td>
+                    <td>${badgeForStatus(r.status)}</td>
+                    <td>${fmtDate(r.timestamp)}</td>
+                    <td class="table-actions-cell">
+                        <button class="action-btn action-btn-edit" onclick="editOrder('${escapeHtml(r.id)}')">Редакт.</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteOrder('${escapeHtml(r.id)}')">Удалить</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="7" style="padding: var(--spacing-lg); color: var(--secondary-grey);">Ничего не найдено</td></tr>`;
+        }
+
+        function renderCustomers() {
+            const tbody = document.getElementById('customersTbody');
+            tbody.innerHTML = state.customers.map(c => `
+                <tr>
+                    <td>${escapeHtml(`${c.firstName||''} ${c.lastName||''}`.trim()) || '—'}</td>
+                    <td>${escapeHtml(c.phone || '—')}</td>
+                    <td>${escapeHtml(c.email || '—')}</td>
+                    <td>${escapeHtml(String(c.repairs_count ?? 0))}</td>
+                    <td class="table-actions-cell">
+                        <button class="action-btn action-btn-edit" onclick="editCustomer('${escapeHtml(c.id)}')">Редакт.</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteCustomer('${escapeHtml(c.id)}')">Удалить</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" style="padding: var(--spacing-lg); color: var(--secondary-grey);">Пока нет клиентов</td></tr>`;
+        }
+
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryTbody');
+            tbody.innerHTML = state.inventory.map(i => `
+                <tr>
+                    <td>${escapeHtml(i.name || '—')}</td>
+                    <td>${escapeHtml(i.sku || '—')}</td>
+                    <td>${escapeHtml(String(i.qty ?? '—'))}</td>
+                    <td>${escapeHtml(String(i.min_qty ?? 0))}</td>
+                    <td>${escapeHtml(i.location || '—')}</td>
+                    <td class="table-actions-cell">
+                        <button class="action-btn action-btn-edit" onclick="editInventory('${escapeHtml(i.id)}')">Редакт.</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteInventory('${escapeHtml(i.id)}')">Удалить</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" style="padding: var(--spacing-lg); color: var(--secondary-grey);">Пока нет позиций</td></tr>`;
+        }
+
+        function renderCalendar() {
+            const tbody = document.getElementById('calendarTbody');
+            const items = [...state.appointments].sort((a,b) => (a.start||'').localeCompare(b.start||''));
+            tbody.innerHTML = items.map(a => `
+                <tr>
+                    <td>${fmtDate(a.start)}</td>
+                    <td>${escapeHtml(a.customer || '—')}</td>
+                    <td>${escapeHtml(a.title || '—')}</td>
+                    <td>${escapeHtml(a.technician || '—')}</td>
+                    <td>${badgeForStatus(a.status)}</td>
+                    <td class="table-actions-cell">
+                        <button class="action-btn action-btn-edit" onclick="editAppointment('${escapeHtml(a.id)}')">Редакт.</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteAppointment('${escapeHtml(a.id)}')">Удалить</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" style="padding: var(--spacing-lg); color: var(--secondary-grey);">Нет записей</td></tr>`;
+        }
+
+        function renderSettings() {
+            document.getElementById('settingsShopName').value = state.settings.shop_name || '';
+            document.getElementById('settingsPhone').value = state.settings.phone || '';
+            document.getElementById('settingsAddress').value = state.settings.address || '';
+        }
+
+        // ---------- data loading ----------
+        async function loadRepairs() {
+            const data = await fetchJSON(API.repairs);
+            state.repairs = data.items || data.repairs || data || [];
+        }
+        async function loadStats() {
+            const s = await fetchJSON(API.stats);
+            document.getElementById('statTotal').textContent = s.total_repairs ?? '—';
+            document.getElementById('statNew').textContent = s.new_repairs ?? '—';
+            document.getElementById('statInProgress').textContent = s.in_progress ?? '—';
+            document.getElementById('statCompleted').textContent = s.completed_repairs ?? '—';
+            document.getElementById('statToday').textContent = `Сегодня: ${s.today_repairs ?? '—'}`;
+        }
+        async function loadCustomers() {
+            const data = await fetchJSON(API.customers);
+            state.customers = data.items || data || [];
+        }
+        async function loadInventory() {
+            const data = await fetchJSON(API.inventory);
+            state.inventory = data.items || data || [];
+        }
+        async function loadAppointments() {
+            const data = await fetchJSON(API.appointments);
+            state.appointments = data.items || data || [];
+        }
+        async function loadSettings() {
+            const data = await fetchJSON(API.settings);
+            state.settings = data || {};
+        }
+
+        async function refreshAll() {
+            await Promise.allSettled([loadStats(), loadRepairs(), loadCustomers(), loadInventory(), loadAppointments(), loadSettings()]);
+            renderDashboard();
+            renderOrders();
+            renderCustomers();
+            renderInventory();
+            renderCalendar();
+            renderSettings();
+        }
+
+        // ---------- orders actions ----------
+        function openOrderModal() {
+            document.getElementById('orderModalTitle').textContent = 'Новая заявка';
+            document.getElementById('orderForm').reset();
+            document.getElementById('orderId').value = '';
+            document.getElementById('orderStatus').value = 'new';
+            openModal('orderModal');
+        }
+
+        function editOrder(id) {
+            const r = state.repairs.find(x => String(x.id) === String(id));
+            if (!r) return;
+            document.getElementById('orderModalTitle').textContent = 'Редактирование заявки';
+            document.getElementById('orderId').value = r.id || '';
+            document.getElementById('orderFirstName').value = r.firstName || '';
+            document.getElementById('orderLastName').value = r.lastName || '';
+            document.getElementById('orderPhone').value = r.phone || '';
+            document.getElementById('orderEmail').value = r.email || '';
+            document.getElementById('orderDeviceType').value = r.deviceType || '';
+            document.getElementById('orderDeviceBrand').value = r.deviceBrand || '';
+            document.getElementById('orderProblemType').value = r.problemType || '';
+            document.getElementById('orderUrgency').value = r.urgency || 'low';
+            document.getElementById('orderAddress').value = r.address || '';
+            document.getElementById('orderDescription').value = r.description || '';
+            document.getElementById('orderStatus').value = r.status || 'new';
+            document.getElementById('orderTechnician').value = r.technician || '';
+            openModal('orderModal');
+        }
+
+        async function deleteOrder(id) {
+            if (!confirm('Удалить заявку?')) return;
+            await fetchJSON(`${API.repairs}/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            await refreshAll();
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const payload = Object.fromEntries(fd.entries());
+            const id = payload.id;
+            delete payload.id;
+
+            if (id) {
+                await fetchJSON(`${API.repairs}/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify(payload) });
+            } else {
+                await fetchJSON(API.repairs, { method: 'POST', body: JSON.stringify(payload) });
+            }
+            closeModal('orderModal');
+            await refreshAll();
+        });
+
+        // ---------- customers actions ----------
+        function openCustomerModal() {
+            document.getElementById('customerModalTitle').textContent = 'Новый клиент';
+            document.getElementById('customerForm').reset();
+            document.getElementById('customerId').value = '';
+            openModal('customerModal');
+        }
+        function editCustomer(id) {
+            const c = state.customers.find(x => String(x.id) === String(id));
+            if (!c) return;
+            document.getElementById('customerModalTitle').textContent = 'Редактирование клиента';
+            document.getElementById('customerId').value = c.id || '';
+            document.getElementById('customerFirstName').value = c.firstName || '';
+            document.getElementById('customerLastName').value = c.lastName || '';
+            document.getElementById('customerPhone').value = c.phone || '';
+            document.getElementById('customerEmail').value = c.email || '';
+            document.getElementById('customerNote').value = c.note || '';
+            openModal('customerModal');
+        }
+        async function deleteCustomer(id) {
+            if (!confirm('Удалить клиента?')) return;
+            await fetchJSON(`${API.customers}/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            await refreshAll();
+        }
+        document.getElementById('customerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const payload = Object.fromEntries(fd.entries());
+            const id = payload.id;
+            delete payload.id;
+            if (id) {
+                await fetchJSON(`${API.customers}/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify(payload) });
+            } else {
+                await fetchJSON(API.customers, { method: 'POST', body: JSON.stringify(payload) });
+            }
+            closeModal('customerModal');
+            await refreshAll();
+        });
+
+        // ---------- inventory actions ----------
+        function openInventoryModal() {
+            document.getElementById('inventoryModalTitle').textContent = 'Новая позиция';
+            document.getElementById('inventoryForm').reset();
+            document.getElementById('inventoryId').value = '';
+            document.getElementById('inventoryMinQty').value = '0';
+            openModal('inventoryModal');
+        }
+        function editInventory(id) {
+            const i = state.inventory.find(x => String(x.id) === String(id));
+            if (!i) return;
+            document.getElementById('inventoryModalTitle').textContent = 'Редактирование позиции';
+            document.getElementById('inventoryId').value = i.id || '';
+            document.getElementById('inventoryName').value = i.name || '';
+            document.getElementById('inventorySku').value = i.sku || '';
+            document.getElementById('inventoryLocation').value = i.location || '';
+            document.getElementById('inventoryQty').value = String(i.qty ?? '');
+            document.getElementById('inventoryMinQty').value = String(i.min_qty ?? 0);
+            openModal('inventoryModal');
+        }
+        async function deleteInventory(id) {
+            if (!confirm('Удалить позицию?')) return;
+            await fetchJSON(`${API.inventory}/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            await refreshAll();
+        }
+        document.getElementById('inventoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const payload = Object.fromEntries(fd.entries());
+            const id = payload.id;
+            delete payload.id;
+            // cast numeric-ish
+            if (payload.qty !== undefined) payload.qty = Number(payload.qty);
+            if (payload.min_qty !== undefined) payload.min_qty = Number(payload.min_qty);
+            if (id) {
+                await fetchJSON(`${API.inventory}/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify(payload) });
+            } else {
+                await fetchJSON(API.inventory, { method: 'POST', body: JSON.stringify(payload) });
+            }
+            closeModal('inventoryModal');
+            await refreshAll();
+        });
+
+        // ---------- appointments actions ----------
+        function openAppointmentModal() {
+            document.getElementById('appointmentModalTitle').textContent = 'Новая запись';
+            document.getElementById('appointmentForm').reset();
+            document.getElementById('appointmentId').value = '';
+            document.getElementById('appointmentStatus').value = 'planned';
+            openModal('appointmentModal');
+        }
+        function editAppointment(id) {
+            const a = state.appointments.find(x => String(x.id) === String(id));
+            if (!a) return;
+            document.getElementById('appointmentModalTitle').textContent = 'Редактирование записи';
+            document.getElementById('appointmentId').value = a.id || '';
+            document.getElementById('appointmentStart').value = (a.start || '').slice(0, 16);
+            document.getElementById('appointmentCustomer').value = a.customer || '';
+            document.getElementById('appointmentTitle').value = a.title || '';
+            document.getElementById('appointmentTechnician').value = a.technician || '';
+            document.getElementById('appointmentStatus').value = a.status || 'planned';
+            document.getElementById('appointmentNote').value = a.note || '';
+            openModal('appointmentModal');
+        }
+        async function deleteAppointment(id) {
+            if (!confirm('Удалить запись?')) return;
+            await fetchJSON(`${API.appointments}/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            await refreshAll();
+        }
+        document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const payload = Object.fromEntries(fd.entries());
+            const id = payload.id;
+            delete payload.id;
+            // normalize datetime-local -> ISO
+            if (payload.start) payload.start = new Date(payload.start).toISOString();
+            if (id) {
+                await fetchJSON(`${API.appointments}/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify(payload) });
+            } else {
+                await fetchJSON(API.appointments, { method: 'POST', body: JSON.stringify(payload) });
+            }
+            closeModal('appointmentModal');
+            await refreshAll();
+        });
+
+        // ---------- settings ----------
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const payload = Object.fromEntries(fd.entries());
+            await fetchJSON(API.settings, { method: 'PUT', body: JSON.stringify(payload) });
+            await refreshAll();
+            alert('✅ Настройки сохранены');
+        });
+
+        // ---------- ui wiring ----------
+        document.querySelectorAll('.modal').forEach(m => {
+            m.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) m.classList.remove('active');
+            });
+        });
+
+        document.getElementById('ordersSearch').addEventListener('input', renderOrders);
+        document.getElementById('ordersStatusFilter').addEventListener('change', renderOrders);
+
+        window.addEventListener('hashchange', () => {
+            const view = currentViewFromHash();
+            showView(view);
+        });
+
+        // Responsive sidebar button
+        function updateMobileMenuBtn() {
+            const btn = document.getElementById('mobileMenuBtn');
+            if (window.innerWidth <= 1024) btn.style.display = 'block';
+            else {
+                btn.style.display = 'none';
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+        window.addEventListener('resize', updateMobileMenuBtn);
+        updateMobileMenuBtn();
+
+        // Init
+        (async function init() {
+            showView(currentViewFromHash());
+            await refreshAll();
+        })();
+    </script>
+</body>
+</html>
+

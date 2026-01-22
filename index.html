@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Здравница ПК — Быстрый и надёжный госпиталь для вашей техники</title>
+    <link rel="stylesheet" href="styles/design-system.css">
+    <link rel="stylesheet" href="styles/landing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="landing-page">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">🔧 Здравница ПК</a>
+                <nav class="nav">
+                    <a href="#services" class="nav-link">Услуги</a>
+                    <a href="#testimonials" class="nav-link">Отзывы</a>
+                    <a href="#contact" class="nav-link">Контакты</a>
+                    <a href="#" id="staffLoginBtn" class="btn btn-secondary btn-sm">Вход для сотрудников</a>
+                </nav>
+                <button class="mobile-menu-toggle">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content fade-in-up">
+                <h1>Быстрый и надёжный ремонт техники</h1>
+                <p>Опытные мастера, качественные запчасти и прозрачные сроки. Вернём устройство в строй — без лишней суеты.</p>
+                <div class="hero-cta">
+                    <a href="#contact" class="btn btn-accent btn-lg">Оставить заявку</a>
+                    <a href="#services" class="btn btn-secondary btn-lg" style="background: rgba(255,255,255,0.2); color: white; border-color: white;">Смотреть услуги</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <h2>Услуги ремонта</h2>
+                <p>Частые поломки — и как мы их решаем</p>
+            </div>
+            <div class="grid grid-4">
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">📱</div>
+                    <h3>Замена экрана</h3>
+                    <p>Замена дисплея/стекла для телефонов, планшетов и ноутбуков. Подберём оптимальный вариант по бюджету.</p>
+                </div>
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">🔋</div>
+                    <h3>Замена батареи</h3>
+                    <p>Быстро меняем аккумулятор и проверяем питание/зарядку. Устройство снова держит заряд как надо.</p>
+                </div>
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">💧</div>
+                    <h3>После воды</h3>
+                    <p>Срочная диагностика, чистка и восстановление после попадания жидкости — чем быстрее, тем больше шансов.</p>
+                </div>
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">💻</div>
+                    <h3>ПО и система</h3>
+                    <p>Вирусы, тормоза, обновления, восстановление данных и настройка — делаем аккуратно и с бэкапом.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Indicators -->
+    <section class="trust-indicators">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item scroll-reveal">
+                    <div class="trust-icon">🛡️</div>
+                    <h3>90 дней</h3>
+                    <p>Гарантия на ремонт</p>
+                </div>
+                <div class="trust-item scroll-reveal">
+                    <div class="trust-icon">✅</div>
+                    <h3>Проверено</h3>
+                    <p>Квалифицированные мастера</p>
+                </div>
+                <div class="trust-item scroll-reveal">
+                    <div class="trust-icon">⏱️</div>
+                    <h3>12–24 ч</h3>
+                    <p>Средний срок ремонта</p>
+                </div>
+                <div class="trust-item scroll-reveal">
+                    <div class="trust-icon">⭐</div>
+                    <h3>4.9/5</h3>
+                    <p>Средняя оценка клиентов</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <h2>Отзывы клиентов</h2>
+                <p>То, что говорят люди после ремонта</p>
+            </div>
+            <div class="testimonial-carousel">
+                <div class="testimonial-card scroll-reveal">
+                    <p class="testimonial-text">"Отличный сервис! Экран заменили меньше чем за 2 часа. Всё аккуратно, выглядит как новый. Рекомендую!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4>Анна М.</h4>
+                            <p>Ремонт iPhone 13 Pro</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-btn" onclick="changeTestimonial(-1)">‹</button>
+                    <button class="carousel-btn" onclick="changeTestimonial(1)">›</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <h2>Оставить заявку</h2>
+                <p>Опишите проблему — мы перезвоним и согласуем детали</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-form scroll-reveal">
+                    <form id="contactForm">
+                        <div class="input-group">
+                            <label for="firstName">Имя</label>
+                            <input type="text" id="firstName" name="firstName" required placeholder="Ваше имя">
+                        </div>
+                        <div class="input-group">
+                            <label for="lastName">Фамилия</label>
+                            <input type="text" id="lastName" name="lastName" placeholder="Фамилия (необязательно)">
+                        </div>
+                        <div class="input-group">
+                            <label for="phone">Телефон</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="+7 (999) 123-45-67">
+                        </div>
+                        <div class="input-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="you@email.com (необязательно)">
+                        </div>
+                        <div class="input-group">
+                            <label for="deviceType">Тип устройства</label>
+                            <select id="deviceType" name="deviceType" required>
+                                <option value="">Выберите...</option>
+                                <option value="smartphone">📱 Смартфон</option>
+                                <option value="tablet">📟 Планшет</option>
+                                <option value="laptop">💻 Ноутбук</option>
+                                <option value="desktop">🖥️ ПК</option>
+                                <option value="other">🔧 Другое</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="deviceBrand">Марка и модель</label>
+                            <input type="text" id="deviceBrand" name="deviceBrand" placeholder="Напр. iPhone 14 Pro, Samsung A54, HP Pavilion...">
+                        </div>
+                        <div class="input-group">
+                            <label for="problemType">Тип проблемы</label>
+                            <select id="problemType" name="problemType">
+                                <option value="">Выберите...</option>
+                                <option value="screen">🖥️ Экран</option>
+                                <option value="battery">🔋 Батарея</option>
+                                <option value="water">💧 Попала вода</option>
+                                <option value="software">💾 Программное обеспечение/система</option>
+                                <option value="charging">🔌 Не заряжается</option>
+                                <option value="performance">⚡ Медленная работа</option>
+                                <option value="other">🔧 Другое</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="urgency">Срочность</label>
+                            <select id="urgency" name="urgency">
+                                <option value="low">🟢 Обычная (3–5 дней)</option>
+                                <option value="medium">🟡 Срочная (1–2 дня)</option>
+                                <option value="high">🔴 Экстренная (сегодня)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="address">Адрес (если нужен выезд)</label>
+                            <input type="text" id="address" name="address" placeholder="Улица, дом, квартира (необязательно)">
+                        </div>
+                        <div class="input-group">
+                            <label for="description">Описание проблемы</label>
+                            <textarea id="description" name="description" required placeholder="Опишите проблему, когда началась, что пробовали..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Отправить заявку</button>
+                    </form>
+                </div>
+                <div class="map-container scroll-reveal">
+                    <div style="text-align: center; padding: var(--spacing-lg);">
+                        <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">📍</div>
+                        <p style="color: var(--secondary-grey); margin-bottom: var(--spacing-sm);">Пока мы ездим к вам — на дом или в офис! Можем забрать устройство на ремонт и вернуть его готовым. Скоро будет и своя точка :)</p>
+                        <p style="margin-bottom: var(--spacing-sm); font-weight: 600;">Контакт для связи: +7 (913) 434-25-98</p>
+                        <p style="margin-top: var(--spacing-md); color: var(--secondary-grey);">Пн–Пт: 10:00–19:00<br>Сб: 11:00–16:00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 TechRepair Pro. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Staff login modal -->
+    <div class="modal" id="staffLoginModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--spacing-xl); width: min(520px, 92vw); box-shadow: var(--shadow-xl);">
+            <div style="display:flex; justify-content: space-between; align-items:center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg);">
+                <h3 style="margin: 0;">Вход для сотрудников</h3>
+                <button id="staffLoginClose" class="btn btn-secondary btn-sm" type="button" style="padding: 0.4rem 0.7rem;">×</button>
+            </div>
+            <form id="staffLoginForm">
+                <div class="input-group">
+                    <label for="staffLogin">Логин</label>
+                    <input type="text" id="staffLogin" class="staff-input" name="login" autocomplete="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="staffPassword">Пароль</label>
+                    <input type="password" id="staffPassword" class="staff-input" name="password" autocomplete="current-password" required>
+                </div>
+                <div id="staffLoginError" style="display:none; color:#b91c1c; background:#fee2e2; padding: 0.75rem; border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                    Неверный логин или пароль
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Войти</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const nav = document.querySelector('.nav');
+        
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+        }
+
+        // Staff login (hardcoded)
+        const STAFF_LOGIN = 'toseh';
+        const STAFF_PASSWORD = '12345';
+        const AUTH_KEY = 'techrepair_staff_auth';
+
+        const staffLoginBtn = document.getElementById('staffLoginBtn');
+        const staffLoginModal = document.getElementById('staffLoginModal');
+        const staffLoginClose = document.getElementById('staffLoginClose');
+        const staffLoginForm = document.getElementById('staffLoginForm');
+        const staffLoginError = document.getElementById('staffLoginError');
+
+        function openStaffModal() {
+            staffLoginError.style.display = 'none';
+            staffLoginModal.style.display = 'flex';
+            document.getElementById('staffLogin').focus();
+        }
+        function closeStaffModal() {
+            staffLoginModal.style.display = 'none';
+        }
+
+        staffLoginBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            openStaffModal();
+        });
+        staffLoginClose?.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeStaffModal();
+        });
+        staffLoginModal?.addEventListener('click', (e) => {
+            if (e.target === staffLoginModal) closeStaffModal();
+        });
+
+        staffLoginForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const login = document.getElementById('staffLogin').value.trim();
+            const pass = document.getElementById('staffPassword').value;
+            if (login === STAFF_LOGIN && pass === STAFF_PASSWORD) {
+                sessionStorage.setItem(AUTH_KEY, '1');
+                window.location.href = 'admin.html';
+            } else {
+                staffLoginError.style.display = 'block';
+            }
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Form submission -> API
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const form = e.target;
+            const fd = new FormData(form);
+            const payload = Object.fromEntries(fd.entries());
+
+            try {
+                const res = await fetch('/api/repairs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                alert('✅ Заявка отправлена! Мы свяжемся с вами в ближайшее время.');
+                form.reset();
+            } catch (err) {
+                console.error(err);
+                alert('❌ Не удалось отправить заявку. Попробуйте ещё раз чуть позже.');
+            }
+        });
+
+        // Testimonial carousel
+        const testimonials = [
+            {
+                text: "Отличный сервис! Экран заменили меньше чем за 2 часа. Всё аккуратно, выглядит как новый. Рекомендую!",
+                author: "Анна М.",
+                device: "Ремонт iPhone 13 Pro"
+            },
+            {
+                text: "Быстро и с понятной коммуникацией. Ноутбук починили в тот же день. Обращусь ещё!",
+                author: "Дмитрий К.",
+                device: "Ремонт ноутбука"
+            },
+            {
+                text: "Профессионально от начала до конца. Всё объяснили, цена адекватная. Планшет работает как новый!",
+                author: "Мария С.",
+                device: "Ремонт планшета"
+            }
+        ];
+        
+        let currentTestimonial = 0;
+        
+        function updateTestimonial() {
+            const testimonial = testimonials[currentTestimonial];
+            const card = document.querySelector('.testimonial-card');
+            card.querySelector('.testimonial-text').textContent = `"${testimonial.text}"`;
+            card.querySelector('.author-info h4').textContent = testimonial.author;
+            card.querySelector('.author-info p').textContent = testimonial.device;
+            card.querySelector('.author-avatar').textContent = testimonial.author.split(' ').map(n => n[0]).join('');
+        }
+        
+        function changeTestimonial(direction) {
+            currentTestimonial += direction;
+            if (currentTestimonial < 0) currentTestimonial = testimonials.length - 1;
+            if (currentTestimonial >= testimonials.length) currentTestimonial = 0;
+            updateTestimonial();
+        }
+        
+        // Auto-rotate testimonials every 5 seconds
+        setInterval(() => changeTestimonial(1), 5000);
+    </script>
+</body>
+</html>

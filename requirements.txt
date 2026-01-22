@@ -1,0 +1,15 @@
+# TechRepair CRM - Зависимости для деплоя
+# Проект использует только стандартную библиотеку Python 3.10+
+# Дополнительных зависимостей не требуется
+
+# Все необходимые модули встроены в Python:
+# - http.server (HTTPServer, BaseHTTPRequestHandler)
+# - json
+# - os
+# - uuid
+# - datetime
+# - threading
+
+# Для продакшена можно использовать WSGI сервер (опционально):
+# gunicorn>=20.1.0
+# uvicorn>=0.20.0
